@@ -51,10 +51,12 @@ const loginForm = () => {
 }
 function Login() {
     return (
-        <div>
-            <div className="text-2xl font-bold">Login</div>
-            <div className="mt-4">
-                {loginForm()}
+        <div className="flex items-center justify-center min-h-[calc(100vh-150px)]">
+            <div className="card w-96 border border-base-200">
+                <div className="card-body">
+                    <h2 className="card-title text-2xl font-bold mb-2">Login</h2>
+                    {loginForm()}
+                </div>
             </div>
         </div>
     )
