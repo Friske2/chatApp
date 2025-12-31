@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import MessageInput from '../components/MessageInput'
 import { getChatRoomId, getUserId } from '../utils/chatUtils'
 import { useMessages } from '../hooks/useMessage'
 function Chat() {
     const { id } = useParams()
+    const messagesEndRef = useRef(null)
     const [chatRoomId, setChatRoomId] = useState(null)
     const { messages, loading, sendMessage } = useMessages(chatRoomId)
     useEffect(() => {
         setChatRoomId(getChatRoomId(id, getUserId()))
     }, [id])
+    const handleSendMessage = useCallback((message) => {
+        // scroll to bottom
+        sendMessage(message)
+    }, [sendMessage])
 
     useEffect(() => {
-        console.log(messages)
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [messages])
+
     if (!chatRoomId) {
         return <div className="text-center mt-20"><span className="loading loading-spinner loading-lg"></span></div>
     }
@@ -41,10 +47,11 @@ function Chat() {
                         </div>
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
 
             <div className="border-t border-base-300 pt-4">
-                <MessageInput onSendMessage={sendMessage} />
+                <MessageInput onSendMessage={handleSendMessage} />
                 <div className='mt-4 flex justify-center'>
                     <Link to="/" className="btn btn-outline btn-sm">Back Home</Link>
                 </div>
