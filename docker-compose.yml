@@ -1,0 +1,15 @@
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: chat-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: YOUR_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: YOUR_PASSWORD
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

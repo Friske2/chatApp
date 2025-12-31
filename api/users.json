@@ -1,0 +1,92 @@
+[
+    {
+        "userId": 1,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "status": "online",
+        "password": "123456",
+        "createdAt": "2022-01-01T00:00:00.000Z",
+        "updatedAt": "2022-01-01T00:00:00.000Z"
+    },
+    {
+        "userId": 2,
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com",
+        "status": "offline",
+        "password": "password123",
+        "createdAt": "2022-01-02T10:00:00.000Z",
+        "updatedAt": "2022-01-02T10:00:00.000Z"
+    },
+    {
+        "userId": 3,
+        "name": "Bob Johnson",
+        "email": "bob.johnson@example.com",
+        "status": "busy",
+        "password": "securepassword",
+        "createdAt": "2022-01-03T11:30:00.000Z",
+        "updatedAt": "2022-01-03T11:30:00.000Z"
+    },
+    {
+        "userId": 4,
+        "name": "Alice Williams",
+        "email": "alice.williams@example.com",
+        "status": "online",
+        "password": "mypassword",
+        "createdAt": "2022-01-04T09:15:00.000Z",
+        "updatedAt": "2022-01-04T09:15:00.000Z"
+    },
+    {
+        "userId": 5,
+        "name": "Charlie Brown",
+        "email": "charlie.brown@example.com",
+        "status": "offline",
+        "password": "charliepassword",
+        "createdAt": "2022-01-05T14:45:00.000Z",
+        "updatedAt": "2022-01-05T14:45:00.000Z"
+    },
+    {
+        "userId": 6,
+        "name": "Diana Prince",
+        "email": "diana.prince@example.com",
+        "status": "online",
+        "password": "wonderwoman",
+        "createdAt": "2022-01-06T08:00:00.000Z",
+        "updatedAt": "2022-01-06T08:00:00.000Z"
+    },
+    {
+        "userId": 7,
+        "name": "Edward Norton",
+        "email": "edward.norton@example.com",
+        "status": "away",
+        "password": "fightclub",
+        "createdAt": "2022-01-07T12:00:00.000Z",
+        "updatedAt": "2022-01-07T12:00:00.000Z"
+    },
+    {
+        "userId": 8,
+        "name": "Fiona Apple",
+        "email": "fiona.apple@example.com",
+        "status": "online",
+        "password": "tidalwave",
+        "createdAt": "2022-01-08T16:20:00.000Z",
+        "updatedAt": "2022-01-08T16:20:00.000Z"
+    },
+    {
+        "userId": 9,
+        "name": "George Miller",
+        "email": "george.miller@example.com",
+        "status": "offline",
+        "password": "madmax",
+        "createdAt": "2022-01-09T18:00:00.000Z",
+        "updatedAt": "2022-01-09T18:00:00.000Z"
+    },
+    {
+        "userId": 10,
+        "name": "Hannah Abbott",
+        "email": "hannah.abbott@example.com",
+        "status": "busy",
+        "password": "hufflepuff",
+        "createdAt": "2022-01-10T07:45:00.000Z",
+        "updatedAt": "2022-01-10T07:45:00.000Z"
+    }
+]
