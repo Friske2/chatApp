@@ -6,6 +6,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const socketHandler = require('./socket');
 require('dotenv').config();
 
 const app = express();
@@ -27,25 +28,7 @@ connectDB();
 app.use('/api/user', userRoutes);
 app.use('/api/message', messageRoutes);
 
-io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
-
-    socket.on('join_room', (roomId) => {
-        socket.join(roomId);
-        console.log(`User ${socket.id} joined room ${roomId}`);
-    });
-
-    socket.on('send_message', (data) => {
-        // data should contain: { roomId, text, sender, ... }
-        console.log('Message received:', data);
-        // Broadcast to others in the room
-        socket.to(data.chatRoomId).emit('receive_message', data);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-    });
-});
+socketHandler(io);
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
