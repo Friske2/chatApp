@@ -3,12 +3,12 @@ import './App.css'
 import Home from './pages/Home'
 import Chat from './pages/ChatRoom'
 import Login from './pages/Login'
-
+import ProtectedRoute from './components/ProtectedRoute'
 function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
-        <header className="app-header fade-in border-b border-base-300 pb-4">
+        {/* <header className="app-header fade-in border-b border-base-300 pb-4">
           <div className="navbar bg-base-100 rounded-box shadow-sm">
             <div className="flex-1">
               <a className="btn btn-ghost text-xl text-primary">ChatApp</a>
@@ -20,16 +20,19 @@ function App() {
               </ul>
             </div>
           </div>
-        </header>
+        </header> */}
         <main className="app-content fade-in">
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/chat/:id" element={<Chat />} />
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/chat/:id" element={<Chat />} />
+            </Route>
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </BrowserRouter >
   )
 }
 
