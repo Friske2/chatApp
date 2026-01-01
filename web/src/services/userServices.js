@@ -56,8 +56,12 @@ export async function userLogin(user) {
 }
 
 export function userLogout(userId) {
-    return fetch(BASE_URL + 'user/' + userId + '/logout', {
-        method: 'PATCH',
+    return fetch(BASE_URL + 'user/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
     })
         .then(response => response.json())
 }
