@@ -1,35 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { getUser } from '../services/userServices'
 import { useQuery } from '@tanstack/react-query'
 
 export function useUsers() {
-    const [filteredUsers, setFilteredUsers] = useState([])
-    const [isError, setIsError] = useState(false)
-    const [errorMessage, setErrorMessage] = useState(null)
-    const { data: users = [], isLoading: loading, error } = useQuery({
+    const { data: users = [], isLoading: loading, error, isError } = useQuery({
         queryKey: ['users'],
         queryFn: getUser,
     })
-    useEffect(() => {
+
+    const filteredUsers = useMemo(() => {
         const userJson = sessionStorage.getItem('user')
         const userId = userJson ? JSON.parse(userJson).userId : null
-        const filteredUsers = users.filter(user => user.userId !== userId)
-        setFilteredUsers(filteredUsers)
+        return users.filter(user => user.userId !== userId)
     }, [users])
 
-    useEffect(() => {
-        if (error) {
-            setIsError(true)
-            setErrorMessage(error.message)
-        }
-    }, [error])
-
-    useEffect(() => {
-        if (!loading) {
-            setIsError(false)
-            setErrorMessage(null)
-        }
-    }, [loading])
-
-    return { users: filteredUsers, loading, isError, errorMessage }
+    return {
+        users: filteredUsers,
+        loading,
+        isError,
+        errorMessage: error?.message || null
+    }
 }

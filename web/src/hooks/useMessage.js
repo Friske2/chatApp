@@ -7,10 +7,31 @@ export function useMessages(chatId) {
     const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(true)
 
-    // Initial Load & Socket Listeners
+    // 1. Initial Load
     useEffect(() => {
         if (!chatId) return
-        setLoading(true)
+        const fetchMessages = async () => {
+            setLoading(true)
+            try {
+                const messages = await getMessagesByChatRoomId(chatId)
+                const filteredMessages = messages.map(message => ({
+                    ...message,
+                    sender: message.senderId == getUserId() ? 'me' : 'them'
+                }))
+                console.log(filteredMessages)
+                setMessages(filteredMessages)
+            } catch (error) {
+                console.error(error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchMessages()
+    }, [chatId])
+
+    // 2. Socket Connection & Listeners
+    useEffect(() => {
+        if (!chatId) return
 
         // Connect and Join Room
         if (!socket.connected) {
@@ -19,30 +40,11 @@ export function useMessages(chatId) {
         socket.emit('join_room', chatId)
         console.log(`Joined room: ${chatId}`)
 
-        // Mock Initial Data (In real app, fetch from API here)
-        // For now, we start empty or could keep mock data if preferred
-        getMessagesByChatRoomId(chatId).then(messages => {
-            const filteredMessages = messages.map(message => ({
-                ...message,
-                sender: message.senderId == getUserId() ? 'me' : 'them'
-            }))
-            console.log(filteredMessages)
-            setMessages(filteredMessages)
-            setLoading(false)
-        })
-
         // Listen for incoming messages
         const handleReceiveMessage = (newMessage) => {
             console.log('Received:', newMessage)
-            // Determine if the message is from 'me' or 'them' based on current logic (simplified)
-            // Ideally, check newMessage.senderId vs currentUserId
             setMessages(prev => [...prev, {
                 ...newMessage,
-                // If the message came from socket broadcast (from server), it's from 'them' (unless we check ID)
-                // However, our sendMessage optimistically adds 'me', so socket broadcast should generally be others.
-                // Assuming server broadcasts to others only (socket.to(room).emit), this is fine.
-                // But if server emits to ALL, we need to dedup. 
-                // Our server uses socket.to(room), so sender doesn't receive it back.
                 sender: 'them'
             }])
         }
@@ -51,7 +53,6 @@ export function useMessages(chatId) {
 
         return () => {
             socket.off('receive_message', handleReceiveMessage)
-            // Optional: Leave room logic if needed
         }
     }, [chatId])
 

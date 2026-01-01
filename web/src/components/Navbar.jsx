@@ -7,19 +7,14 @@ function Navbar() {
     const navigate = useNavigate();
     const handleLogout = useCallback(async () => {
         try {
-            // TODO: implement logout
-            // get user id from session storage
             const userId = getUserId();
-            // call logout api
-            await userLogout(userId)
-            // clear session storage
+            await userLogout(userId);
             sessionStorage.clear();
-            // redirect to login page
-            navigate('/login');
+            navigate("/login");
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    }, []);
+    }, [navigate]);
     return (
         <header className="app-header fade-in border-b border-base-300 pb-4">
             <div className="navbar bg-base-100 rounded-box shadow-sm">
