@@ -1,0 +1,13 @@
+{
+  "name": "chatapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve:web": "cd web && npm run dev",
+    "serve:api": "cd api && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
