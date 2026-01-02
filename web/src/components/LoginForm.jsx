@@ -1,11 +1,13 @@
 import { useState } from "react"
-import { userLogin } from "../services/userServices"
+import { login } from "../services/authService"
+import { getUserByUserId } from "../services/userServices"
 import { useNavigate } from "react-router-dom"
+import { setToken, setRefreshToken } from "../utils/token"
 
 function LoginForm() {
     const navigate = useNavigate()
-    const [email, setEmail] = useState('john.doe@example.com')
-    const [password, setPassword] = useState('123456')
+    const [email, setEmail] = useState('jane.smith@example.com')
+    const [password, setPassword] = useState('1234')
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     // const { user, loading, isError, error } = useAuth({ username, password })
@@ -24,12 +26,19 @@ function LoginForm() {
         }
         // call login function
         setLoading(true)
-        userLogin({ email, password })
+        login({ email, password })
             .then((res) => {
                 console.log(res)
+                getUserByUserId()
+                    .then(({ userId }) => {
+                        if (userId) {
+                            sessionStorage.setItem('userId', userId)
+                        }
+                    })
                 // redirect to /
                 // set user in localStorage
-                sessionStorage.setItem('user', JSON.stringify(res))
+                setToken(res.token)
+                setRefreshToken(res.refreshToken)
                 navigate('/')
             })
             .catch((err) => {

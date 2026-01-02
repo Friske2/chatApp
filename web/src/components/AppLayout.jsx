@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { getToken, getRefreshToken } from "../utils/token";
 import Navbar from "./Navbar";
 
 function AppLayout() {
-    const userJson = sessionStorage.getItem('user');
-    const user = userJson ? JSON.parse(userJson) : null;
-
-    if (!user) {
+    const token = getToken();
+    const refreshToken = getRefreshToken();
+    if (!token || !refreshToken) {
         return <Navigate to="/login" replace />;
     }
 
