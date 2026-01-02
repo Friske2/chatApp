@@ -2,8 +2,8 @@ import { useState } from "react"
 import useAuth from "../hooks/useAuth"
 
 function LoginForm() {
-    const [email, setEmail] = useState('jane.smith@example.com')
-    const [password, setPassword] = useState('1234')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
 
     const { mutate: login, isPending: loading } = useAuth()
