@@ -1,53 +1,32 @@
 import { useState } from "react"
-import { login } from "../services/authService"
-import { getUserByUserId } from "../services/userServices"
-import { useNavigate } from "react-router-dom"
-import { setToken, setRefreshToken } from "../utils/token"
+import useAuth from "../hooks/useAuth"
 
 function LoginForm() {
-    const navigate = useNavigate()
     const [email, setEmail] = useState('jane.smith@example.com')
     const [password, setPassword] = useState('1234')
-    const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-    // const { user, loading, isError, error } = useAuth({ username, password })
+
+    const { mutate: login, isPending: loading } = useAuth()
+
     const handleSubmit = (e) => {
         e.preventDefault()
         // validate username and password
         if (!email || !password) {
-            alert('Please enter email and password')
+            setErrorMessage('Please enter email and password')
             return
         }
         // validate email format with regex
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!emailRegex.test(email)) {
-            alert('Please enter a valid email')
+            setErrorMessage('Please enter a valid email')
             return
         }
         // call login function
-        setLoading(true)
-        login({ email, password })
-            .then((res) => {
-                console.log(res)
-                getUserByUserId()
-                    .then(({ userId }) => {
-                        if (userId) {
-                            sessionStorage.setItem('userId', userId)
-                        }
-                    })
-                // redirect to /
-                // set user in localStorage
-                setToken(res.token)
-                setRefreshToken(res.refreshToken)
-                navigate('/')
-            })
-            .catch((err) => {
-                console.log(err)
+        login({ email, password }, {
+            onError: (err) => {
                 setErrorMessage(err.message)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
+            }
+        })
     }
     return (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
