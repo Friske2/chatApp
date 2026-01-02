@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
-import { userLogout } from "../services/userServices";
-import { getUserId } from "../utils/chatUtils";
+import { logout as userLogout } from "../services/authService";
+import { removeTokenAndRefreshToken } from "../utils/token";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 function Navbar() {
     const navigate = useNavigate();
     const handleLogout = useCallback(async () => {
         try {
-            const userId = getUserId();
-            await userLogout(userId);
-            sessionStorage.clear();
+            await userLogout();
+            removeTokenAndRefreshToken();
             navigate("/login");
         } catch (error) {
             console.error(error);

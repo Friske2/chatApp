@@ -1,10 +1,26 @@
-import { useQuery } from "@tanstack/react-query"
-import { userLogin } from "../services/userServices"
+import { useMutation } from "@tanstack/react-query"
+import { login } from "../services/authService"
+import { getUserByUserId } from "../services/userServices"
+import { setToken, setRefreshToken } from "../utils/token"
+import { useNavigate } from "react-router-dom"
 
-export default function useAuth(payload) {
-    const { data: user, isLoading: loading, isError: isError, error: error } = useQuery({
-        queryKey: ['user', payload],
-        queryFn: () => userLogin(payload),
+export default function useAuth() {
+    const navigate = useNavigate()
+
+    return useMutation({
+        mutationFn: (payload) => login(payload),
+        onSuccess: async (data) => {
+            setToken(data.token)
+            setRefreshToken(data.refreshToken)
+            try {
+                const { userId } = await getUserByUserId()
+                if (userId) {
+                    sessionStorage.setItem('userId', userId)
+                }
+                navigate('/')
+            } catch (error) {
+                console.error("Failed to fetch user details", error)
+            }
+        },
     })
-    return { user, loading, isError, error }
 }

@@ -4,7 +4,6 @@ export function getChatRoomId(userId1, userId2) {
 }
 
 export function getUserId() {
-    const userJson = sessionStorage.getItem('user')
-    const userId = userJson ? JSON.parse(userJson).userId : null
+    const userId = sessionStorage.getItem('userId')
     return userId
 }

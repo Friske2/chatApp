@@ -1,13 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
-const mongoose = require('mongoose');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const authRoutes = require('./routes/authRoutes');
 const socketHandler = require('./socket');
-require('dotenv').config();
+
 
 const app = express();
 app.use(cors());
@@ -27,6 +28,7 @@ connectDB();
 // Routes
 app.use('/api/user', userRoutes);
 app.use('/api/message', messageRoutes);
+app.use('/api/auth', authRoutes);
 
 socketHandler(io);
 
