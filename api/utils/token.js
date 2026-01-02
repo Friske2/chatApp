@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const ACCESS_TOKEN_EXPIRES_IN = '60s';
-const REFRESH_TOKEN_EXPIRES_IN = '7d';
+const ACCESS_TOKEN_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN;
+const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN;
 
 const generateToken = (id, type, expiresIn) => {
     return jwt.sign({ id, type }, process.env.JWT_SECRET, {
@@ -52,6 +52,9 @@ const getUserIdFromToken = (token) => {
 const getTokenType = (token) => {
     return jwt.decode(token).type;
 }
+const getTokenValue = (token) => {
+    return jwt.decode(token);
+}
 module.exports = {
     generateToken,
     verifyToken,
@@ -60,6 +63,7 @@ module.exports = {
     getUserIdFromToken,
     getTokenType,
     getRefreshTokenFromHeader,
+    getTokenValue,
     ACCESS_TOKEN_EXPIRES_IN,
     REFRESH_TOKEN_EXPIRES_IN
 };

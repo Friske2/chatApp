@@ -1,7 +1,7 @@
 const User = require("../models/User")
 const Auth = require("../models/Auth")
 const { comparePassword } = require("../utils/password");
-const { generateToken, verifyToken, getRefreshTokenFromHeader, ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } = require("../utils/token");
+const { generateToken, verifyToken, getRefreshTokenFromHeader, getTokenValue, ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } = require("../utils/token");
 const { calExpireAt } = require("../utils/date");
 
 exports.login = async (req, res) => {
@@ -16,20 +16,28 @@ exports.login = async (req, res) => {
     if (!isPasswordValid) {
         return res.status(400).json({ message: "Invalid password" });
     }
+    // check already logged in 
+    const alreadyAuth = await Auth.findOne({ userId: user.userId });
+    if (alreadyAuth) {
+        // kill all token of user 
+        await Auth.deleteMany({ userId: user.userId });
+    }
     // generate access token 
     const accessToken = generateToken(user.userId, 'access', ACCESS_TOKEN_EXPIRES_IN);
     // generate refresh token 
     const refreshToken = generateToken(user.userId, 'refresh', REFRESH_TOKEN_EXPIRES_IN);
+    const tokenValue = getTokenValue(refreshToken);
+    console.log("tokenValue", tokenValue);
     // save token in database 
     // set expireAt 7 days 
-    const expiresAt = calExpireAt(REFRESH_TOKEN_EXPIRES_IN);
-    console.log("expireAt", expiresAt);
+    const expiresAt = tokenValue.exp * 1000;
     const auth = new Auth({
         userId: user.userId,
         token: refreshToken,
         isRevoked: false,
+        iat: tokenValue.iat,
         createdAt: Date.now(),
-        expiresAt,
+        expiresAt: expiresAt,
     });
     await auth.save();
     // return user 
@@ -86,6 +94,7 @@ exports.verifyToken = async (req, res) => {
         if (auth.isRevoked) {
             throw new Error("Token is revoked");
         }
+        console.log("auth", auth.expiresAt, Date.now());
         if (auth.expiresAt < Date.now()) {
             throw new Error("Token is expired");
         }
@@ -102,6 +111,7 @@ exports.refreshToken = async (req, res) => {
         if (validToken.type != 'refresh') {
             throw new Error("Invalid token type");
         }
+        console.log("refreshToken", refreshToken);
         const auth = await Auth.findOne({ token: refreshToken });
         if (!auth) {
             throw new Error("Invalid token");
@@ -111,6 +121,9 @@ exports.refreshToken = async (req, res) => {
             throw new Error("Token is revoked");
         }
         // check is token expired 
+        console.log("auth", auth.expiresAt, Date.now());
+        console.log("auth.expiresAt", new Date(auth.expiresAt));
+        console.log("Date.now()", new Date(Date.now()));
         if (auth.expiresAt < Date.now()) {
             throw new Error("Token is expired");
         }
@@ -122,12 +135,17 @@ exports.refreshToken = async (req, res) => {
         // generate new refresh token 
         const newRefreshToken = generateToken(auth.userId, 'refresh', REFRESH_TOKEN_EXPIRES_IN);
         // save new refresh token 
+        // get token Value 
+        const tokenValue = getTokenValue(newRefreshToken);
+        const expiresAt = tokenValue.exp * 1000;
+        const iat = tokenValue.iat;
         const newAuth = new Auth({
             userId: auth.userId,
             token: newRefreshToken,
             isRevoked: false,
+            iat: iat,
             createdAt: Date.now(),
-            expiresAt: calExpireAt(REFRESH_TOKEN_EXPIRES_IN),
+            expiresAt: expiresAt,
         });
         await newAuth.save();
         // return new access token and new refresh token 

@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const AuthSchema = new mongoose.Schema({
+    iat: {
+        type: Number,
+        required: true,
+    },
     userId: {
         type: Number,
         required: true,
@@ -20,6 +24,9 @@ const AuthSchema = new mongoose.Schema({
     createdAt: {
         type: Number,
     },
+    message: {
+        type: String,
+    }
 });
 
 module.exports = mongoose.model("auth", AuthSchema);
