@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { getUser } from '../services/userServices'
 import { useQuery } from '@tanstack/react-query'
+import { getUserId } from '../utils/chatUtils'
 
 export function useUsers() {
     const { data: users = [], isLoading: loading, error, isError } = useQuery({
@@ -9,8 +10,7 @@ export function useUsers() {
     })
 
     const filteredUsers = useMemo(() => {
-        const userJson = sessionStorage.getItem('user')
-        const userId = userJson ? JSON.parse(userJson).userId : null
+        const userId = getUserId()
         return users.filter(user => user.userId !== userId)
     }, [users])
 
