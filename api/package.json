@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "build": "esbuild index.js --bundle --platform=node --outfile=dist/bundle.js",
+    "build": "node build.js",
     "start:prod": "node dist/bundle.js"
   },
   "keywords": [],
