@@ -2,7 +2,6 @@ const User = require("../models/User")
 const Auth = require("../models/Auth")
 const { comparePassword } = require("../utils/password");
 const { generateToken, verifyToken, getRefreshTokenFromHeader, getTokenValue, ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } = require("../utils/token");
-const { calExpireAt } = require("../utils/date");
 
 exports.login = async (req, res) => {
     // get email,password from req body 
@@ -55,6 +54,14 @@ exports.logout = async (req, res) => {
         if (!auth) {
             throw new Error("Invalid token");
         }
+        const userId = auth.userId;
+        // set user status offline 
+        const user = await User.findOne({ userId });
+        if (!user) {
+            throw new Error("User not found");
+        }
+        user.status = 'offline';
+        await user.save();
         // delete all token of user 
         await Auth.deleteMany({ userId: auth.userId });
         return res.json({ message: "Logout successfully" });
