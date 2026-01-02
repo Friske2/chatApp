@@ -5,6 +5,7 @@ const userController = require('../controllers/userController');
 
 router.post('/', userController.createUser);
 router.get('/', authMiddleware, userController.getUsers);
+router.get('/me', authMiddleware, userController.getUserByUserId)
 router.patch('/active', authMiddleware, userController.activeUserStatus);
 
 module.exports = router;
