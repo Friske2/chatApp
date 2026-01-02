@@ -16,8 +16,8 @@ export function createUser(user) {
         .then(response => response.data)
 }
 
-export function activeUserStatus(userId) {
-    return api.patch('user/' + userId + '/active')
+export function activeUserStatus() {
+    return api.patch('user/active')
         .then(response => response.data)
 }
 
