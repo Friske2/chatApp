@@ -6,7 +6,7 @@ const AuthSchema = new mongoose.Schema({
         required: true,
     },
     userId: {
-        type: Number,
+        type: String,
         required: true,
     },
     token: {

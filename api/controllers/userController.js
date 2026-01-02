@@ -3,10 +3,11 @@ const { hashPassword } = require('../utils/password');
 
 exports.createUser = async (req, res) => {
     try {
-        const { userId, name, email, status, password } = req.body;
-        // hash password 
+        const { name, email, password } = req.body;
+        const status = 'offline';
+        // has password
         const hashedPassword = await hashPassword(password);
-        const newUser = new User({ userId, name, email, status, password: hashedPassword });
+        const newUser = new User({ name, email, status, password: hashedPassword });
         const savedUser = await newUser.save();
         res.status(201).json(savedUser);
     } catch (err) {
@@ -85,7 +86,7 @@ exports.userLogout = async (req, res) => {
 
 exports.activeUserStatus = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const userId = req.userId
         const user = await User.findOne({ userId });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
