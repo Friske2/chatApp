@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "node build.js",
+    "start:prod": "node dist/bundle.js"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +22,8 @@
     "nodemon": "^3.1.11",
     "socket.io": "^4.8.3",
     "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.2"
   }
 }
