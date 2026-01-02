@@ -1,9 +1,12 @@
 const User = require('../models/User');
+const { hashPassword } = require('../utils/password');
 
 exports.createUser = async (req, res) => {
     try {
         const { userId, name, email, status, password } = req.body;
-        const newUser = new User({ userId, name, email, status, password });
+        // hash password 
+        const hashedPassword = await hashPassword(password);
+        const newUser = new User({ userId, name, email, status, password: hashedPassword });
         const savedUser = await newUser.save();
         res.status(201).json(savedUser);
     } catch (err) {
@@ -21,7 +24,6 @@ exports.getUsers = async (req, res) => {
                     name: 1,
                     email: 1,
                     status: 1,
-                    password: 1,
                     createdAt: 1,
                     updatedAt: 1,
                     _id: 0
@@ -75,6 +77,24 @@ exports.activeUserStatus = async (req, res) => {
         user.status = 'online';
         await user.save();
         res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { userId, password } = req.body;
+        const user = await User.findOne({ userId });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const hashedPassword = await hashPassword(password);
+        user.password = hashedPassword;
+        await user.save();
+        res.status(200).json({
+            message: 'Password reset successfully'
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
